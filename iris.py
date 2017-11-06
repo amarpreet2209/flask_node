@@ -5,7 +5,7 @@ from flask import Flask, request,jsonify
 # from json import dumps
 # from flask.ext.jsonpify import jsonify
 
-# import numpy as np
+import numpy as np
 import pandas as pd
 import sys
 import os
@@ -24,24 +24,26 @@ def predict():
           irisData = request.get_json()
           # print(irisData)
 
-          X_test = pd.DataFrame.from_dict(irisData,orient='index')   
+          X_test = pd.DataFrame.from_dict(irisData,orient='index')  
+           
           values = (X_test.values).reshape(1,4)
+          
           X_new = pd.DataFrame(values,columns=X_test.index)
           # from sklearn.datasets import load_iris
           iris = load_iris()
           df = pd.DataFrame(iris['data'],columns=iris['feature_names'])
-          df['target'] = iris['target']   
+          df['target'] = iris['target']  
           X = df.drop('target',axis=1)
           y = df['target'] 
           # from sklearn.svm import SVC
           model = SVC()
           model.fit(X,y)
           prediction = model.predict(X_new)      
-
           # prediction = 555
+       
 
 
-          return jsonify(prediction[0])
+          return jsonify(np.asscalar(prediction[0]))
 
 
 
