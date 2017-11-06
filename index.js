@@ -2,7 +2,7 @@ var express  = require('express');
 var expressHbs = require('express-handlebars');
 var bodyParser = require('body-parser');
 var axios = require('axios');
-
+var rp = require('request-promise');
 
 
 app = express();
@@ -21,11 +21,24 @@ app.get('/',(req,res) => {
 });
 
 app.post('/result',(req,res) => {
+	console.log(JSON.stringify(req.body));
 
-	axios.post('localhost:8000/',{data:JSON.stringify(req.body)})
+	var options = {
+    method: 'POST',
+    uri: 'http://127.0.0.1:5000/',
+    body: req.body,
+    json: true // Automatically stringifies the body to JSON
+};
+console.log('body: ',options.body);
+
+rp(options)
 		.then((response) => {
+			console.log('response: ',response);
 			res.render('result.hbs',{data:response});
-		});
+		})
+    .catch(function (err) {
+        // POST failed...
+    });
 });
 
 app.listen(3000, () => {
